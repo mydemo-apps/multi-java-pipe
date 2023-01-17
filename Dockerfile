@@ -7,7 +7,7 @@ RUN git clone -b 2.10 https://github.com/mydemo-apps/multi-java-pipe.git
 #Maven
 FROM maven:3.8.6-openjdk-8 as build
 WORKDIR /app
-COPY --from=git /app/simple-java-maven-app  /app
+COPY --from=git /app/multi-java-pipe  /app
 RUN java -version
 RUN mvn package
 
