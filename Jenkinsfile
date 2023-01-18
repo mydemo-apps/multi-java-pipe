@@ -3,7 +3,7 @@ pipeline {
     tools {
         jdk 'JDK_8'
         jdk 'JDK_17'
-        maven 'maven'
+        maven 'maven3'
     }
     parameters {
         choice(name: 'branch', choices: ['2.10', '2.11'], description: 'Choose the branch to build')
@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 withEnv(["JAVA_HOME=${tool 'JDK_8'}"]) {
-                withEnv(["MAVEN_HOME=${tool 'maven'}", "PATH+MAVEN=${tool 'maven'}/bin"]) {
+                withEnv(["MAVEN_HOME=${tool 'maven3'}", "PATH+MAVEN=${tool 'maven3'}/bin"]) {
                     sh 'mvn clean package'
                 }
                 }
@@ -33,7 +33,7 @@ pipeline {
             }
             steps {
                 withEnv(["JAVA_HOME=${tool 'JDK_17'}"]) {
-                withEnv(["MAVEN_HOME=${tool 'maven'}", "PATH+MAVEN=${tool 'maven'}/bin"]) {
+                withEnv(["MAVEN_HOME=${tool 'maven3'}", "PATH+MAVEN=${tool 'maven3'}/bin"]) {
                     sh 'mvn clean package'
                 }
             }
