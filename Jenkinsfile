@@ -11,7 +11,8 @@ pipeline {
     stages {
         stage ('Cloning Git'){
             steps{
-                checkout scmGit(branches: [[name: "*/${params.branch}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mydemo-apps/multi-java-pipe.git']])
+        checkout([$class: 'GitSCM', branches: [[name: "*/${params.branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/mydemo-apps/multi-java-pipe.git']]])
+
             }
         } 
         stage('Build Branch 2.10') {
