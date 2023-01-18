@@ -1,19 +1,42 @@
-pipeline{
+pipeline {
     agent any
+    tools {
+        jdk 'JDK_8'
+        jdk 'JDK_17'
+        maven 'maven'
+    }
     parameters {
         choice(name: 'branch', choices: ['2.10', '2.11'], description: 'Choose the branch to build')
     }
-    stages{
+    stages {
         stage ('Cloning Git'){
             steps{
-            checkout scmGit(branches: [[name: "*/${params.branch}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mydemo-apps/multi-java-pipe.git']])
+                checkout scmGit(branches: [[name: "*/${params.branch}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mydemo-apps/multi-java-pipe.git']])
             }
         } 
-        stage('Docker Build and Run'){
-            steps{
-            sh 'docker build --no-cache -t helloworld:${BUILD_NUMBER} .'
-            sh 'docker run helloworld:${BUILD_NUMBER}'
+        stage('Build Branch 2.10') {
+            when {
+                expression { params.branch == '2.10' }
             }
-        }   
+            steps {
+                withEnv(["JAVA_HOME=${tool 'JDK_8'}"]) {
+                withEnv(["MAVEN_HOME=${tool 'maven'}", "PATH+MAVEN=${tool 'maven'}/bin"]) {
+                    sh 'mvn clean package'
+                }
+                }
+            }
+        }
+        stage('Build Branch 2.11') {
+            when {
+                expression { params.branch == '2.11' }
+            }
+            steps {
+                withEnv(["JAVA_HOME=${tool 'JDK_17'}"]) {
+                withEnv(["MAVEN_HOME=${tool 'maven'}", "PATH+MAVEN=${tool 'maven'}/bin"]) {
+                    sh 'mvn clean package'
+                }
+            }
+        }
     }
+}
 }
